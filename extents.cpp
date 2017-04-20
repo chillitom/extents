@@ -6,7 +6,7 @@
 
 using namespace std;
 
-map<int, int> points;
+map<int, int> points {{0, 0}};
 
 void add_point(int point, int delta) {
     auto it = points.lower_bound(point);
@@ -19,29 +19,24 @@ void add_point(int point, int delta) {
 
 int lookup(int p) {
     auto it = points.lower_bound(p);
-    if(it != points.end() && it->first > p)
-        it--;
-    return it == points.end() ? 0 : it->second;
+    return it == points.end() ? 0 : (it->first > p ? it-- : it)->second;    
 }
 
 int main() {
-    ifstream in("extents.txt");
-    add_point(-1, 0);
-    int a, b;
-    while(in >> a >> b) {
-        add_point(a, 1);
-        add_point(b + 1, -1);
+    int x, y, n = 0, point;
+
+    ifstream in("extents.txt");      
+    while(in >> x >> y) {
+        add_point(x, 1);
+        add_point(y + 1, -1);
     }
 
-    int n = 0;
     for(auto& i : points) {
         n += i.second;
         i.second = n;
     }
 
     ifstream numbers("numbers.txt");
-
-    int point;
     while(numbers >> point) {
         cout << lookup(point) << endl;
     }
